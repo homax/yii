@@ -36,7 +36,7 @@ class PageController extends Controller
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
+				'actions'=>array('admin','delete', 'generate'),
 				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
@@ -142,6 +142,20 @@ class PageController extends Controller
 			'model'=>$model,
 		));
 	}
+
+    public function actionGenerate($count = 100) {
+        if($count > 1000)
+            throw new Exception("Too many articles");
+        $text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ornare consectetur ligula gravida tempor. Donec pulvinar erat eu metus fermentum mattis. Aenean tincidunt gravida orci sed fermentum. Proin condimentum a ipsum placerat placerat. Praesent vulputate molestie libero. Nullam aliquam ligula turpis, eu posuere leo aliquet in. Ut ultrices feugiat commodo. Nulla ac est tincidunt, mollis lorem vel, volutpat lectus. Aenean lobortis mollis dolor nec gravida. Mauris ullamcorper vitae nisl at posuere. Nunc at tincidunt lectus. Maecenas ac nulla tortor. Nam odio dolor, gravida semper iaculis a, feugiat vitae odio.
+
+Praesent ut enim molestie lorem ultricies sagittis facilisis non nisl. Ut lacinia gravida est, et porta lacus lacinia in. Sed vulputate est at mattis sodales. Nullam gravida est nisl, vel facilisis sapien gravida at. Morbi interdum sit amet ipsum eget consectetur. Vestibulum interdum viverra varius. Integer sollicitudin, velit at elementum vulputate, arcu felis pulvinar augue, sit amet tempus turpis arcu suscipit odio. Quisque et ornare arcu. Nunc id sapien non eros pharetra interdum.";
+        for($i = 1; $i <= $count; $i++) {
+            $model = new Page();
+            $model->title = "Title".$i;
+            $model->text =  $text;
+            $model->save();
+        }
+    }
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
