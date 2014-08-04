@@ -1,24 +1,25 @@
 <?php
 
 /**
- * This is the model class for table "{{pages}}".
+ * This is the model class for table "{{users}}".
  *
- * The followings are the available columns in table '{{pages}}':
+ * The followings are the available columns in table '{{users}}':
  * @property integer $id
- * @property string $title
- * @property string $content
+ * @property string $username
+ * @property string $password
  * @property integer $created
- * @property integer $status
- * @property integer $category_id
+ * @property integer $ban
+ * @property integer $role
+ * @property string $email
  */
-class Pages extends CActiveRecord
+class Users extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return '{{pages}}';
+		return '{{users}}';
 	}
 
 	/**
@@ -29,13 +30,13 @@ class Pages extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-            array('title, content, status, category_id', 'required'),
-			array('created, status, category_id', 'numerical', 'integerOnly'=>true),
-			array('title', 'length', 'max'=>50),
-			array('content', 'safe'),
+			array('username, password, created, ban, role', 'required'),
+			array('created, ban, role', 'numerical', 'integerOnly'=>true),
+			array('username, password', 'length', 'max'=>50),
+			array('email', 'length', 'max'=>255),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, title, content, created, status, category_id', 'safe', 'on'=>'search'),
+			array('id, username, password, created, ban, role, email', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -47,7 +48,6 @@ class Pages extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-            'categories' => array(self::BELONGS_TO, 'Categories', 'category_id')
 		);
 	}
 
@@ -58,11 +58,12 @@ class Pages extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'title' => 'Заголовок',
-			'content' => 'Содержание',
-			'created' => 'Дата',
-			'status' => 'Статус',
-			'category_id' => 'Категория',
+			'username' => 'Имя',
+			'password' => 'Пароль',
+			'created' => 'Зарегестрирован',
+			'ban' => 'Бан',
+			'role' => 'Роль',
+			'email' => 'Email',
 		);
 	}
 
@@ -85,37 +86,39 @@ class Pages extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('title',$this->title,true);
-		$criteria->compare('content',$this->content,true);
+		$criteria->compare('username',$this->username,true);
+		$criteria->compare('password',$this->password,true);
 		$criteria->compare('created',$this->created);
-		$criteria->compare('status',$this->status);
-		$criteria->compare('category_id',$this->category_id);
+		$criteria->compare('ban',$this->ban);
+		$criteria->compare('role',$this->role);
+		$criteria->compare('email',$this->email,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
 	}
 
-    protected function beforeSave()
-    {
-        if($this->getIsNewRecord())
-            $this->created = time();
+    protected function beforeSave() {
+        if($this->isNewRecord)
+            $this->ban = 0;
+        $this->password = md5($this->password);
         return parent::beforeSave();
     }
 
     /**
-     * @return array Array of all pages
+     * @return array Array of all users
      */
     public static function all()
     {
-        return CHtml::listData(self::model()->findAll(), 'id', 'title');
+        return CHtml::listData(self::model()->findAll(), 'id', 'username');
     }
+
 
     /**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Pages the static model class
+	 * @return Users the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
