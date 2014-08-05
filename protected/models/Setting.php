@@ -1,21 +1,21 @@
 <?php
 
 /**
- * This is the model class for table "{{categories}}".
+ * This is the model class for table "{{setting}}".
  *
- * The followings are the available columns in table '{{categories}}':
+ * The followings are the available columns in table '{{setting}}':
  * @property integer $id
- * @property string $title
- * @property string $position
+ * @property integer $defaultStatusComment
+ * @property integer $defaultStatusUser
  */
-class Categories extends CActiveRecord
+class Setting extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return '{{categories}}';
+		return '{{setting}}';
 	}
 
 	/**
@@ -26,12 +26,11 @@ class Categories extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('title, position', 'required'),
-			array('title', 'length', 'max'=>255),
-			array('position', 'length', 'max'=>8),
+			array('defaultStatusComment, defaultStatusUser', 'required'),
+			array('defaultStatusComment, defaultStatusUser', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, title, position', 'safe', 'on'=>'search'),
+			array('id, defaultStatusComment, defaultStatusUser', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -53,25 +52,10 @@ class Categories extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'title' => 'Название',
-			'position' => 'Позиция',
+			'defaultStatusComment' => 'Статус комментариев по умолчанию',
+			'defaultStatusUser' => 'Статус пользователей по умолчанию',
 		);
 	}
-
-    public static function all()
-    {
-        return CHtml::listData(self::model()->findAll(), 'id', 'title');
-    }
-
-    public static function menu($position)
-    {
-        $models = self::model()->findAllByAttributes(array('position' => $position));
-        $array = array();
-        foreach ($models as $one) {
-            $array[] = array('label' => $one->title, 'url' => '/category/index/id/'.$one->id);
-        }
-        return $array;
-    }
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
@@ -92,8 +76,8 @@ class Categories extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('title',$this->title,true);
-		$criteria->compare('position',$this->position,true);
+		$criteria->compare('defaultStatusComment',$this->defaultStatusComment);
+		$criteria->compare('defaultStatusUser',$this->defaultStatusUser);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -104,7 +88,7 @@ class Categories extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Categories the static model class
+	 * @return Setting the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
