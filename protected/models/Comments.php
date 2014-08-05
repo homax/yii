@@ -13,6 +13,9 @@
  */
 class Comments extends CActiveRecord
 {
+
+    public $verifyCode;
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -29,12 +32,14 @@ class Comments extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('content, page_id, created, user_id, guest', 'required'),
+            array('content', 'required'),
+			array('content, guest', 'required', 'on'=>'guest'),
 			array('page_id, created, user_id', 'numerical', 'integerOnly'=>true),
 			array('guest', 'length', 'max'=>50),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, status, content, page_id, created, user_id, guest', 'safe', 'on'=>'search'),
+            array('verifyCode', 'captcha', 'allowEmpty'=>!CCaptcha::checkRequirements(), 'on'=>'guest'),
 		);
 	}
 
@@ -98,7 +103,29 @@ class Comments extends CActiveRecord
 		));
 	}
 
-	/**
+    protected function beforeSave() {
+        if($this->getIsNewRecord())
+            $this->created = time();
+        if(!Yii::app()->user->isGuest)
+            $this->user_id = Yii::app()->user->id;
+        return parent::beforeSave();
+    }
+
+    public static function all($page_id) {
+
+        $criteria=new CDbCriteria;
+
+        $criteria->compare('page_id', $page_id);
+        $criteria->compare('status', 0);
+        $criteria->order = 'created DESC';
+
+        return new CActiveDataProvider('Comments', array(
+            'criteria'=>$criteria,
+        ));
+    }
+
+
+    /**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.

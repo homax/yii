@@ -25,8 +25,15 @@ $('.search-form form').submit(function(){
 )); ?>
 </div><!-- search-form -->
 
+<?php
+echo CHtml::form();
+echo CHtml::submitButton('Опубликовать', array('name'=>'public'));
+echo CHtml::submitButton('Скрыть', array('name'=>'hide'));
+?>
+
 <?php $this->widget('zii.widgets.grid.CGridView', array(
     'id'           => 'comments-grid',
+    'selectableRows'=>2,
     'dataProvider' => $model->search(),
     'filter'       => $model,
     'columns'      => array(
@@ -36,10 +43,14 @@ $('.search-form form').submit(function(){
                 'width' => 30
             )
         ),
+        array(
+            'class'=>'CCheckBoxColumn',
+            'id' => 'CommentId',
+        ),
         'status' => array(
             'name'=>'status',
-            'value' => '($data->status == 1)?"Доступно":"Скрыто"',
-            'filter' => array(0=>"Скрыто", 1=>"Доступно"),
+            'value' => '($data->status == 1)?"Скрыто":"Доступно"',
+            'filter' => array(0=>"Доступно", 1=>"Скрыто"),
         ),
         'content',
         'page_id' => array(

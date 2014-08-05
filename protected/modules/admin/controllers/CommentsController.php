@@ -109,6 +109,15 @@ class CommentsController extends Controller
 	 */
 	public function actionIndex()
 	{
+
+        if(isset($_POST['public'])) {
+            $model = Comments::model()->updateByPk($_POST['CommentId'], array('status'=>0));
+            $this->refresh();
+        }elseif(isset($_POST['ban'])) {
+            $model = Comments::model()->updateByPk($_POST['CommentId'], array('status'=>1));
+            $this->refresh();
+        }
+
 		$model=new Comments('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Comments']))

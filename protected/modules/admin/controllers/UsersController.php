@@ -102,8 +102,10 @@ class UsersController extends Controller
 	{
         if(isset($_POST['noban'])) {
             $model = Users::model()->updateByPk($_POST['UserId'], array('ban'=>0));
+            $this->refresh();
         }elseif(isset($_POST['ban'])) {
             $model = Users::model()->updateByPk($_POST['UserId'], array('ban'=>1));
+            $this->refresh();
         }
 		$model=new Users('search');
 		$model->unsetAttributes();  // clear any default values

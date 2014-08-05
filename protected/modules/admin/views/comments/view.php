@@ -15,9 +15,18 @@ $this->menu=array(
 	'attributes'=>array(
 		'id',
 		'content',
-		'page_id',
-		'created',
-		'user_id',
+		'page_id' => array(
+            'name' => 'page_id',
+            'value' => $model->pages->title
+        ),
+		'created' => array(
+            'name' => 'Дата',
+            'value' => date('d.m.Y H:i:s', $model->created)
+        ),
+		'user_id' => array(
+            'name' => 'Пользователь',
+            'value' => $model->users->username
+        ),
 		'guest',
 	),
 )); ?>
