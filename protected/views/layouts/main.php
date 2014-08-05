@@ -28,15 +28,16 @@
 
 	<div id="mainmenu">
 		<?php $this->widget('zii.widgets.CMenu',array(
-			'items'=>array_merge(Categories::menu('top'),array(
+			'items'=>array_merge(array(array('label'=>'Главная', 'url'=>array('/site/index'))),Categories::menu('top'),array(
 				/*array('label'=>'Home', 'url'=>array('/site/index')),
 				array('label'=>'Pages', 'url'=>array('/page')),
 				array('label'=>'Books', 'url'=>array('/book')),
 				array('label'=>'About', 'url'=>array('/site/page', 'view'=>'about')),
-				array('label'=>'Contact', 'url'=>array('/site/contact')),
-				array('label'=>'Админка', 'url'=>array('/admin/')),*/
-				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
-				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
+				array('label'=>'Contact', 'url'=>array('/site/contact')),*/
+				array('label'=>'Админка', 'url'=>array('/admin/'), 'visible'=>!Yii::app()->user->isGuest),
+				array('label'=>'Вход', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
+				array('label'=>'Регистрация', 'url'=>array('/site/registration'), 'visible'=>Yii::app()->user->isGuest),
+				array('label'=>'Выход ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 			)),
 		)); ?>
 	</div><!-- mainmenu -->

@@ -21,23 +21,15 @@ class UsersController extends Controller
 	 */
 	public function accessRules()
 	{
-		return array(
-			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view', 'password'),
-				'users'=>array('*'),
-			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
-				'users'=>array('@'),
-			),
-			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
-				'users'=>array('admin'),
-			),
-			array('deny',  // deny all users
-				'users'=>array('*'),
-			),
-		);
+        return array(
+            array('allow',  // allow all users to perform 'index' and 'view' actions
+                'actions'=>array('index', 'delete', 'view', 'password', 'update'),
+                'roles'=>array('2'),
+            ),
+            array('deny',  // deny all users
+                'users'=>array('*'),
+            ),
+        );
 	}
 
 	/**
@@ -108,6 +100,11 @@ class UsersController extends Controller
 	 */
 	public function actionIndex()
 	{
+        if(isset($_POST['noban'])) {
+            $model = Users::model()->updateByPk($_POST['UserId'], array('ban'=>0));
+        }elseif(isset($_POST['ban'])) {
+            $model = Users::model()->updateByPk($_POST['UserId'], array('ban'=>1));
+        }
 		$model=new Users('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Users']))

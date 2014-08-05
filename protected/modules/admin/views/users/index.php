@@ -29,12 +29,23 @@ $('.search-form form').submit(function(){
 )); ?>
 </div><!-- search-form -->
 
+<?php
+    echo CHtml::form();
+    echo CHtml::submitButton('Разбанить', array('name'=>'noban'));
+    echo CHtml::submitButton('Бан', array('name'=>'ban'));
+?>
+
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'users-grid',
+    'selectableRows'=>2,
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
 	'columns'=>array(
 		'id',
+        array(
+            'class'=>'CCheckBoxColumn',
+            'id' => 'UserId',
+        ),
 		'username',
 		'password',
         'email',
@@ -58,3 +69,6 @@ $('.search-form form').submit(function(){
 		),
 	),
 )); ?>
+<?php
+echo CHtml::endForm();
+?>

@@ -106,17 +106,25 @@ class SiteController extends Controller
     {
         $model=new Users;
 
+        $model->setScenario('registration');
+
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
         if(isset($_POST['Users']))
         {
             $model->attributes=$_POST['Users'];
-            if($model->save())
-                $this->redirect(array('view','id'=>$model->id));
+            $setting = Setting::model()->findByPk(1);
+            $model->ban = ($setting->defaultStatusUser == 0) ? 0 : 1;
+            if($model->save()) {
+                if($setting->defaultStatusUser == 0)
+                    Yii::app()->user->setFlash('registration','Thank you for registration.');
+                else
+                    Yii::app()->user->setFlash('registration','Wait admin');
+            }
         }
 
-        $this->render('create',array(
+        $this->render('registration',array(
             'model'=>$model,
         ));
     }
