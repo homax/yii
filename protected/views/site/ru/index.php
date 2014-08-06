@@ -8,7 +8,7 @@ if(Yii::app()->user->checkAccess('2')){
     echo Yii::t('hello', 'Hello, I am an administrator');
 }
 ?>
-<h1>Welcome to <i><?php echo CHtml::encode(Yii::app()->name); ?></i></h1>
+<h1>Добро пожаловать в <i><?php echo CHtml::encode(Yii::app()->name); ?></i></h1>
 
 <p>Congratulations! You have successfully created your Yii application.</p>
 
